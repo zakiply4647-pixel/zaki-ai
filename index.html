@@ -1,1 +1,282 @@
 
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101114">
+<title>ZAKI AI - مساعدك الذكي</title>
+<style>
+:root{color-scheme:dark;--bg:#101114;--panel:#18191e;--border:#303139;--text:#f5f5f7;--muted:#a5a5b0;--accent:#a78bfa}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
+button,textarea{font:inherit}
+button{cursor:pointer}
+.app{display:flex;min-height:100dvh}
+.sidebar{width:260px;background:#15161a;padding:16px;border-left:1px solid var(--border);display:flex;flex-direction:column;gap:14px}
+.brand{display:flex;align-items:center;gap:10px;font-size:21px;font-weight:800;padding:10px 4px}
+.logo{width:40px;height:40px;border-radius:14px;background:linear-gradient(135deg,#8b5cf6,#4f46e5);display:grid;place-items:center;font-weight:900}
+.new,.sidebtn{border:1px solid var(--border);background:transparent;color:var(--text);border-radius:12px;padding:12px;text-align:right}
+.sidebtn:hover,.new:hover{background:#24252c}
+.side-title{font-size:12px;color:var(--muted);margin-top:15px}
+#history{display:flex;flex-direction:column;gap:5px}
+.history-item{background:none;border:0;color:#ddd;text-align:right;padding:9px;border-radius:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.history-item:hover{background:#25262d}
+.side-bottom{margin-top:auto;color:var(--muted);font-size:12px;line-height:1.8}
+main{flex:1;min-width:0;display:flex;flex-direction:column;min-height:100dvh}
+.topbar{height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;border-bottom:1px solid #24252b}
+.topbar-title{font-weight:700}
+.top-actions{display:flex;gap:8px}
+.iconbtn{border:1px solid var(--border);background:var(--panel);color:var(--text);border-radius:10px;padding:9px 12px}
+.content{width:min(850px,100%);margin:auto;flex:1;display:flex;flex-direction:column;padding:22px 22px 12px}
+.welcome{text-align:center;margin:auto 0;padding:35px 0}
+.biglogo{width:66px;height:66px;margin:0 auto 20px;border-radius:23px;background:linear-gradient(135deg,#a78bfa,#6366f1);display:grid;place-items:center;font-size:30px;font-weight:900;box-shadow:0 8px 35px #8b5cf633}
+h1{font-size:clamp(27px,5vw,38px);margin:0 0 12px}
+.subtitle{color:var(--muted);line-height:1.9;margin:0 auto 25px;max-width:520px}
+.suggestions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-width:570px;margin:auto}
+.suggestion{background:var(--panel);border:1px solid var(--border);color:var(--text);border-radius:14px;padding:15px;text-align:right;line-height:1.6}
+.suggestion:hover{border-color:var(--accent)}
+#messages{display:flex;flex-direction:column;gap:24px;padding:20px 0 30px}
+.msg{line-height:1.95;overflow-wrap:anywhere}
+.msg.user{align-self:flex-start;max-width:90%;background:#292a32;border-radius:18px;padding:12px 16px;white-space:pre-wrap}
+.msg.ai{width:100%;white-space:pre-wrap}
+.msg-label{font-size:12px;color:var(--muted);margin-bottom:6px}
+.msg-body a{color:#c4b5fd}
+.msg-actions{display:flex;gap:8px;margin-top:9px}
+.smallbtn{background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-size:12px}
+.composer-wrap{position:sticky;bottom:0;background:linear-gradient(transparent,var(--bg) 18%);padding:15px 0 8px}
+.composer{border:1px solid #454550;background:#1b1c22;border-radius:22px;padding:12px;box-shadow:0 8px 35px #0003}
+#prompt{width:100%;resize:none;min-height:55px;max-height:180px;background:transparent;color:var(--text);border:0;outline:0;padding:9px;line-height:1.7}
+.composer-bottom{display:flex;justify-content:space-between;align-items:center;gap:10px;padding-top:8px}
+.hint{color:var(--muted);font-size:11px}
+#send{background:#a78bfa;color:#171323;border:0;border-radius:12px;padding:11px 19px;font-weight:800}
+#send:disabled{opacity:.5;cursor:wait}
+.disclaimer{text-align:center;color:#777782;font-size:11px;line-height:1.8;padding:8px 0}
+.status{font-size:12px;color:var(--muted);margin-bottom:10px}
+@media(max-width:650px){
+.sidebar{display:none}
+.topbar{height:56px;padding:0 12px}
+.content{padding:12px 14px 8px}
+.welcome{padding:25px 0}
+.suggestions{grid-template-columns:1fr}
+.suggestion{padding:12px}
+.composer{border-radius:18px}
+.hint{max-width:170px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="logo">Z</div><span>ZAKI AI</span></div>
+  <button class="new" id="newChat">＋ محادثة جديدة</button>
+  <div class="side-title">محادثاتك</div>
+  <div id="history"></div>
+  <div class="side-bottom">ZAKI AI<br>مساعدك الذكي متعدد اللغات<br>الإجابات قد تحتوي على أخطاء.</div>
+</aside>
+
+<main>
+  <header class="topbar">
+    <div class="topbar-title">✦ ZAKI AI <span style="color:#a78bfa;font-size:12px">BETA</span></div>
+    <div class="top-actions">
+      <button class="iconbtn" id="clearChat">محادثة جديدة</button>
+    </div>
+  </header>
+
+  <section class="content">
+    <div id="welcome" class="welcome">
+      <div class="biglogo">Z</div>
+      <h1>أهلًا بك في ZAKI AI</h1>
+      <p class="subtitle">ماذا تريد أن تعرف اليوم؟ اسأل بالعربية أو الجزائرية أو الفرنسية أو الإنجليزية أو أي لغة أخرى.</p>
+      <div class="suggestions">
+        <button class="suggestion" data-prompt="اشرح لي الذكاء الاصطناعي بطريقة بسيطة مع أمثلة">🧠 تعلّم شيئًا جديدًا</button>
+        <button class="suggestion" data-prompt="ساعدني في إنشاء موقع احترافي باستخدام HTML وCSS وJavaScript">💻 البرمجة وإنشاء المواقع</button>
+        <button class="suggestion" data-prompt="علّمني خمس كلمات إنجليزية جديدة مع الترجمة والنطق">🌍 تعلّم اللغات</button>
+        <button class="suggestion" data-prompt="حل لي مسألة رياضيات واشرح الخطوات بالتفصيل">📚 المساعدة في الدراسة</button>
+      </div>
+    </div>
+
+    <div id="messages" aria-live="polite"></div>
+
+    <div class="composer-wrap">
+      <div class="status" id="status">جاهز للمساعدة</div>
+      <div class="composer">
+        <textarea id="prompt" rows="2" placeholder="اكتب رسالتك إلى ZAKI AI..." aria-label="رسالتك"></textarea>
+        <div class="composer-bottom">
+          <span class="hint">↵ Enter للإرسال · Shift + Enter لسطر جديد</span>
+          <button id="send">إرسال ↑</button>
+        </div>
+      </div>
+      <div class="disclaimer">قد يخطئ الذكاء الاصطناعي؛ تحقق من المعلومات المهمة.</div>
+    </div>
+  </section>
+</main>
+</div>
+
+<script>
+const API_URL = "https://zaki-ai.zakiply4647.workers.dev/ask";
+
+const promptBox = document.getElementById("prompt");
+const messages = document.getElementById("messages");
+const welcome = document.getElementById("welcome");
+const sendButton = document.getElementById("send");
+const statusBox = document.getElementById("status");
+const historyBox = document.getElementById("history");
+
+let chat = [];
+let chats = [];
+let busy = false;
+
+function renderHistory(){
+  historyBox.replaceChildren();
+  chats.forEach((item,index)=>{
+    const b=document.createElement("button");
+    b.className="history-item";
+    b.textContent="▤ "+item.title;
+    b.onclick=()=>{
+      chat=item.messages.map(m=>({...m}));
+      renderMessages();
+    };
+    historyBox.appendChild(b);
+  });
+}
+
+function saveChat(){
+  if(!chat.length)return;
+  const title=String(chat.find(m=>m.role==="user")?.text||"محادثة جديدة").slice(0,36);
+  const id=chat[0].text;
+  const old=chats.findIndex(c=>c.id===id);
+  const item={id,title,messages:chat.map(m=>({...m}))};
+  if(old>=0)chats[old]=item;
+  else chats.unshift(item);
+  chats=chats.slice(0,15);
+  try{localStorage.setItem("zaki-ai-chats",JSON.stringify(chats));}catch(e){}
+  renderHistory();
+}
+
+function renderMessages(){
+  messages.replaceChildren();
+  welcome.style.display=chat.length?"none":"block";
+  chat.forEach((m,index)=>{
+    const wrap=document.createElement("div");
+    wrap.className="msg "+(m.role==="user"?"user":"ai");
+    if(m.role==="assistant"){
+      const label=document.createElement("div");
+      label.className="msg-label";
+      label.textContent="✦ ZAKI AI";
+      wrap.appendChild(label);
+    }
+    const body=document.createElement("div");
+    body.className="msg-body";
+    body.textContent=m.text;
+    wrap.appendChild(body);
+    if(m.role==="assistant"){
+      const actions=document.createElement("div");
+      actions.className="msg-actions";
+      const copy=document.createElement("button");
+      copy.className="smallbtn";
+      copy.textContent="نسخ الرد";
+      copy.onclick=async()=>{
+        try{
+          await navigator.clipboard.writeText(m.text);
+          copy.textContent="تم النسخ ✓";
+        }catch(e){copy.textContent="تعذر النسخ";}
+      };
+      actions.appendChild(copy);
+      wrap.appendChild(actions);
+    }
+    messages.appendChild(wrap);
+  });
+  window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"});
+}
+
+function newChat(){
+  chat=[];
+  renderMessages();
+  promptBox.value="";
+  statusBox.textContent="جاهز للمساعدة";
+  promptBox.focus();
+}
+document.getElementById("newChat").onclick=newChat;
+document.getElementById("clearChat").onclick=newChat;
+
+document.querySelectorAll("[data-prompt]").forEach(button=>{
+  button.addEventListener("click",()=>{
+    promptBox.value=button.dataset.prompt;
+    promptBox.focus();
+  });
+});
+
+async function sendMessage(){
+  const text=promptBox.value.trim();
+  if(!text||busy)return;
+
+  busy=true;
+  sendButton.disabled=true;
+  statusBox.textContent="ZAKI AI يفكر...";
+  chat.push({role:"user",text});
+  promptBox.value="";
+  renderMessages();
+
+  const thinking={role:"assistant",text:"جارٍ التفكير..."};
+  chat.push(thinking);
+  renderMessages();
+
+  try{
+    const response=await fetch(API_URL,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        message:text,
+        history:chat.slice(0,-2).slice(-12).map(m=>({
+          role:m.role==="assistant"?"model":"user",
+          parts:[{text:m.text}]
+        }))
+      })
+    });
+
+    const data=await response.json();
+    if(!response.ok){
+      throw new Error(data.error||data.message||("خطأ من الخادم: "+response.status));
+    }
+
+    const answer=data.answer||data.response||
+      data.result?.response||data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if(typeof answer!=="string"||!answer.trim()){
+      throw new Error("الخادم لم يرجع إجابة. تحقق من إعدادات Worker.");
+    }
+
+    chat[chat.length-1].text=answer.trim();
+    statusBox.textContent="تم الرد";
+  }catch(error){
+    chat[chat.length-1].text=
+      "تعذر الحصول على الرد.\n\n"+error.message+
+      "\n\nإذا استمرت المشكلة، تحقق من رابط الخادم وإعدادات API وCORS في Cloudflare.";
+    statusBox.textContent="تعذر الاتصال";
+  }finally{
+    busy=false;
+    sendButton.disabled=false;
+    renderMessages();
+    saveChat();
+    promptBox.focus();
+  }
+}
+
+sendButton.addEventListener("click",sendMessage);
+promptBox.addEventListener("keydown",event=>{
+  if(event.key==="Enter"&&!event.shiftKey){
+    event.preventDefault();
+    sendMessage();
+  }
+});
+
+try{
+  const stored=JSON.parse(localStorage.getItem("zaki-ai-chats")||"[]");
+  if(Array.isArray(stored))chats=stored;
+}catch(e){}
+renderHistory();
+</script>
+</body>
+  </html>
+
