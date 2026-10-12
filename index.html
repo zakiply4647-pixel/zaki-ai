@@ -5,278 +5,290 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#101114">
-<title>ZAKI AI - مساعدك الذكي</title>
+<title>ZAKI AI</title>
 <style>
-:root{color-scheme:dark;--bg:#101114;--panel:#18191e;--border:#303139;--text:#f5f5f7;--muted:#a5a5b0;--accent:#a78bfa}
+:root{color-scheme:dark;--bg:#101114;--panel:#191a20;--panel2:#24252d;--border:#33343d;--text:#f5f5f7;--muted:#a5a5b0;--accent:#a78bfa;--user:#292a32}
+:root[data-theme=light]{color-scheme:light;--bg:#fff;--panel:#f7f7f8;--panel2:#eeeef1;--border:#dedee3;--text:#202127;--muted:#686875;--accent:#7c3aed;--user:#f0eafa}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
-button,textarea{font:inherit}
-button{cursor:pointer}
+body{margin:0;background:var(--bg);color:var(--text);font:16px system-ui,sans-serif}
+button,input,textarea{font:inherit}button{cursor:pointer;color:inherit}
 .app{display:flex;min-height:100dvh}
-.sidebar{width:260px;background:#15161a;padding:16px;border-left:1px solid var(--border);display:flex;flex-direction:column;gap:14px}
-.brand{display:flex;align-items:center;gap:10px;font-size:21px;font-weight:800;padding:10px 4px}
-.logo{width:40px;height:40px;border-radius:14px;background:linear-gradient(135deg,#8b5cf6,#4f46e5);display:grid;place-items:center;font-weight:900}
-.new,.sidebtn{border:1px solid var(--border);background:transparent;color:var(--text);border-radius:12px;padding:12px;text-align:right}
-.sidebtn:hover,.new:hover{background:#24252c}
-.side-title{font-size:12px;color:var(--muted);margin-top:15px}
-#history{display:flex;flex-direction:column;gap:5px}
-.history-item{background:none;border:0;color:#ddd;text-align:right;padding:9px;border-radius:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.history-item:hover{background:#25262d}
-.side-bottom{margin-top:auto;color:var(--muted);font-size:12px;line-height:1.8}
+aside{width:265px;flex-shrink:0;background:var(--panel);border-left:1px solid var(--border);padding:14px;display:flex;flex-direction:column;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;font-size:21px;font-weight:800;padding:8px}
+.logo{width:40px;height:40px;border-radius:14px;background:linear-gradient(135deg,#a78bfa,#4f46e5);display:grid;place-items:center;color:white}
+button,.field{border:1px solid var(--border);background:var(--panel);border-radius:11px;padding:10px}
+.sidebtn,.new{width:100%;text-align:start;background:transparent}
+#history{display:grid;gap:5px;overflow:auto}
+.hist{display:flex;gap:6px;align-items:center}
+.hist button:first-child{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:start;background:transparent;border:0}
+.small{padding:6px;font-size:12px}
 main{flex:1;min-width:0;display:flex;flex-direction:column;min-height:100dvh}
-.topbar{height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;border-bottom:1px solid #24252b}
-.topbar-title{font-weight:700}
-.top-actions{display:flex;gap:8px}
-.iconbtn{border:1px solid var(--border);background:var(--panel);color:var(--text);border-radius:10px;padding:9px 12px}
-.content{width:min(850px,100%);margin:auto;flex:1;display:flex;flex-direction:column;padding:22px 22px 12px}
-.welcome{text-align:center;margin:auto 0;padding:35px 0}
-.biglogo{width:66px;height:66px;margin:0 auto 20px;border-radius:23px;background:linear-gradient(135deg,#a78bfa,#6366f1);display:grid;place-items:center;font-size:30px;font-weight:900;box-shadow:0 8px 35px #8b5cf633}
+header{height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--border);gap:8px}
+.actions{display:flex;gap:7px}
+.content{width:min(850px,100%);margin:auto;flex:1;display:flex;flex-direction:column;padding:18px 20px 8px}
+.welcome{text-align:center;margin:auto 0;padding:28px 0}
+.biglogo{width:68px;height:68px;border-radius:23px;background:linear-gradient(135deg,#a78bfa,#6366f1);display:grid;place-items:center;font-size:31px;font-weight:900;color:white;margin:0 auto 18px}
 h1{font-size:clamp(27px,5vw,38px);margin:0 0 12px}
-.subtitle{color:var(--muted);line-height:1.9;margin:0 auto 25px;max-width:520px}
-.suggestions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-width:570px;margin:auto}
-.suggestion{background:var(--panel);border:1px solid var(--border);color:var(--text);border-radius:14px;padding:15px;text-align:right;line-height:1.6}
-.suggestion:hover{border-color:var(--accent)}
-#messages{display:flex;flex-direction:column;gap:24px;padding:20px 0 30px}
-.msg{line-height:1.95;overflow-wrap:anywhere}
-.msg.user{align-self:flex-start;max-width:90%;background:#292a32;border-radius:18px;padding:12px 16px;white-space:pre-wrap}
-.msg.ai{width:100%;white-space:pre-wrap}
-.msg-label{font-size:12px;color:var(--muted);margin-bottom:6px}
-.msg-body a{color:#c4b5fd}
-.msg-actions{display:flex;gap:8px;margin-top:9px}
-.smallbtn{background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-size:12px}
-.composer-wrap{position:sticky;bottom:0;background:linear-gradient(transparent,var(--bg) 18%);padding:15px 0 8px}
-.composer{border:1px solid #454550;background:#1b1c22;border-radius:22px;padding:12px;box-shadow:0 8px 35px #0003}
-#prompt{width:100%;resize:none;min-height:55px;max-height:180px;background:transparent;color:var(--text);border:0;outline:0;padding:9px;line-height:1.7}
-.composer-bottom{display:flex;justify-content:space-between;align-items:center;gap:10px;padding-top:8px}
-.hint{color:var(--muted);font-size:11px}
-#send{background:#a78bfa;color:#171323;border:0;border-radius:12px;padding:11px 19px;font-weight:800}
-#send:disabled{opacity:.5;cursor:wait}
-.disclaimer{text-align:center;color:#777782;font-size:11px;line-height:1.8;padding:8px 0}
-.status{font-size:12px;color:var(--muted);margin-bottom:10px}
-@media(max-width:650px){
-.sidebar{display:none}
-.topbar{height:56px;padding:0 12px}
-.content{padding:12px 14px 8px}
-.welcome{padding:25px 0}
-.suggestions{grid-template-columns:1fr}
-.suggestion{padding:12px}
-.composer{border-radius:18px}
-.hint{max-width:170px}
-}
+.muted{color:var(--muted);line-height:1.8}
+.suggestions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-width:600px;margin:22px auto}
+.suggestion{text-align:start;line-height:1.6}
+#messages{display:flex;flex-direction:column;gap:23px;padding:18px 0 30px}
+.msg{line-height:1.9;overflow-wrap:anywhere;white-space:pre-wrap}
+.msg.user{align-self:flex-start;max-width:92%;background:var(--user);border-radius:18px;padding:12px 16px}
+.msg.ai{width:100%}
+.msg img{display:block;max-width:min(100%,360px);max-height:300px;object-fit:contain;border-radius:12px;margin:8px 0}
+.label{font-size:12px;color:var(--muted);margin-bottom:6px}
+.composer-wrap{position:sticky;bottom:0;background:linear-gradient(transparent,var(--bg) 20%);padding:12px 0 5px}
+.composer{border:1px solid var(--border);background:var(--panel);border-radius:21px;padding:12px}
+#prompt{width:100%;resize:vertical;min-height:65px;max-height:180px;background:transparent;color:var(--text);border:0;outline:0;padding:9px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+#send,.primary{background:var(--accent);color:white;border:0;font-weight:700}
+#send:disabled{opacity:.5}
+#preview{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);padding:5px}
+#preview img{width:48px;height:48px;object-fit:cover;border-radius:8px}
+.hidden{display:none!important}
+#authView{max-width:440px;width:100%;margin:auto;padding:22px;border:1px solid var(--border);border-radius:18px;background:var(--panel)}
+.field{width:100%;margin:6px 0 12px;background:var(--bg);color:var(--text)}
+.primary{width:100%;margin:5px 0;padding:12px}
+.notice{font-size:12px;color:var(--muted);line-height:1.7}
+footer{text-align:center;color:var(--muted);font-size:11px;padding:10px}
+@media(max-width:700px){aside{display:none}.app.menu aside{display:flex;position:fixed;inset:0 0 0 auto;z-index:5;width:min(85vw,300px);box-shadow:0 0 0 999px #0008}header{padding:0 10px}.content{padding:12px}.suggestions{grid-template-columns:1fr}.welcome{padding:20px 0}}
 </style>
 </head>
 <body>
-<div class="app">
-<aside class="sidebar">
-  <div class="brand"><div class="logo">Z</div><span>ZAKI AI</span></div>
-  <button class="new" id="newChat">＋ محادثة جديدة</button>
-  <div class="side-title">محادثاتك</div>
-  <div id="history"></div>
-  <div class="side-bottom">ZAKI AI<br>مساعدك الذكي متعدد اللغات<br>الإجابات قد تحتوي على أخطاء.</div>
+<div class="app" id="app">
+<aside>
+ <div class="brand"><div class="logo">Z</div>ZAKI AI</div>
+ <button class="new" id="newChat">＋ <span data-ar="محادثة جديدة" data-en="New chat">محادثة جديدة</span></button>
+ <button class="sidebtn" id="loginSide">👤 <span data-ar="تسجيل الدخول" data-en="Sign in">تسجيل الدخول</span></button>
+ <div class="muted" data-ar="محادثاتك" data-en="Your chats">محادثاتك</div>
+ <div id="history"></div>
+ <div style="margin-top:auto;display:grid;gap:8px">
+  <button class="sidebtn" id="theme">◐ <span data-ar="تغيير المظهر" data-en="Toggle theme">تغيير المظهر</span></button>
+  <button class="sidebtn" id="language">🌐 العربية / English</button>
+  <button class="sidebtn hidden" id="logout">↪ <span data-ar="تسجيل الخروج" data-en="Sign out">تسجيل الخروج</span></button>
+  <div id="account" class="notice"></div>
+ </div>
 </aside>
-
 <main>
-  <header class="topbar">
-    <div class="topbar-title">✦ ZAKI AI <span style="color:#a78bfa;font-size:12px">BETA</span></div>
-    <div class="top-actions">
-      <button class="iconbtn" id="clearChat">محادثة جديدة</button>
-    </div>
-  </header>
+<header>
+ <div><button id="menu">☰</button> <b>ZAKI AI</b></div>
+ <div class="actions"><button id="themeTop">◐</button><button id="loginTop">👤 <span data-ar="تسجيل الدخول" data-en="Sign in">تسجيل الدخول</span></button></div>
+</header>
+<section class="content">
+ <div id="welcome" class="welcome">
+  <div class="biglogo">Z</div><h1 data-ar="أهلًا بك في ZAKI AI" data-en="Welcome to ZAKI AI">أهلًا بك في ZAKI AI</h1>
+  <p class="muted" data-ar="اسأل بالعربية أو الإنجليزية أو الفرنسية، ويمكنك إرفاق صورة." data-en="Ask in Arabic, English or French, and attach an image.">اسأل بالعربية أو الإنجليزية أو الفرنسية، ويمكنك إرفاق صورة.</p>
+  <div class="suggestions">
+   <button class="suggestion" data-ar="علّمني شيئًا جديدًا اليوم" data-en="Teach me something new">🧠 تعلّم شيئًا جديدًا</button>
+   <button class="suggestion" data-ar="ساعدني في إنشاء موقع احترافي" data-en="Help me build a website">💻 البرمجة وإنشاء المواقع</button>
+   <button class="suggestion" data-ar="علّمني كلمات إنجليزية جديدة" data-en="Teach me new English words">🌍 تعلّم اللغات</button>
+   <button class="suggestion" data-ar="اشرح لي درسًا بطريقة سهلة" data-en="Explain a lesson simply">📚 المساعدة في الدراسة</button>
+  </div>
+ </div>
+ <div id="messages" class="hidden"></div>
+ <section id="authView" class="hidden">
+  <h2 data-ar="حساب ZAKI AI" data-en="ZAKI AI account">حساب ZAKI AI</h2>
+  <p class="muted" data-ar="سجّل الدخول لحفظ محادثاتك." data-en="Sign in to save your chats.">سجّل الدخول لحفظ محادثاتك.</p>
+  <label data-ar="البريد الإلكتروني" data-en="Email">البريد الإلكتروني</label>
+  <input class="field" id="email" type="email" autocomplete="email" placeholder="you@example.com">
+  <label data-ar="كلمة المرور" data-en="Password">كلمة المرور</label>
+  <input class="field" id="password" type="password" autocomplete="current-password">
+  <button class="primary" id="signIn" data-ar="تسجيل الدخول" data-en="Sign in">تسجيل الدخول</button>
+  <button id="signUp" class="primary" style="background:var(--panel2);color:var(--text)" data-ar="إنشاء حساب بالبريد" data-en="Create account">إنشاء حساب بالبريد</button>
+  <button id="google" class="primary" style="background:white;color:#222">G　Continue with Google</button>
+  <button id="back" style="width:100%" data-ar="العودة للمحادثة" data-en="Back to chat">العودة للمحادثة</button>
+  <p id="authStatus" class="notice"></p>
+ </section>
+ <div class="composer-wrap" id="composerWrap">
+  <div id="status" class="muted" style="font-size:12px;margin-bottom:8px" data-ar="جاهز للمساعدة" data-en="Ready to help">جاهز للمساعدة</div>
+  <div class="composer">
+   <div id="preview" class="hidden"></div>
+   <textarea id="prompt" rows="2" placeholder="اكتب رسالتك إلى ZAKI AI..."></textarea>
+   <div class="row">
+    <div class="row"><button id="attach">＋ <span data-ar="إرفاق صورة" data-en="Attach image">إرفاق صورة</span></button><input id="imageInput" type="file" accept="image/jpeg,image/png,image/webp" class="hidden"></div>
+    <button id="send" data-ar="إرسال ↑" data-en="Send ↑">إرسال ↑</button>
+   </div>
+  </div>
+  <footer data-ar="قد يخطئ الذكاء الاصطناعي؛ تحقق من المعلومات المهمة." data-en="AI can make mistakes. Check important information.">قد يخطئ الذكاء الاصطناعي؛ تحقق من المعلومات المهمة.</footer>
+ </div>
+</section>
+</main></div>
+<script type="module">
+import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-  <section class="content">
-    <div id="welcome" class="welcome">
-      <div class="biglogo">Z</div>
-      <h1>أهلًا بك في ZAKI AI</h1>
-      <p class="subtitle">ماذا تريد أن تعرف اليوم؟ اسأل بالعربية أو الجزائرية أو الفرنسية أو الإنجليزية أو أي لغة أخرى.</p>
-      <div class="suggestions">
-        <button class="suggestion" data-prompt="اشرح لي الذكاء الاصطناعي بطريقة بسيطة مع أمثلة">🧠 تعلّم شيئًا جديدًا</button>
-        <button class="suggestion" data-prompt="ساعدني في إنشاء موقع احترافي باستخدام HTML وCSS وJavaScript">💻 البرمجة وإنشاء المواقع</button>
-        <button class="suggestion" data-prompt="علّمني خمس كلمات إنجليزية جديدة مع الترجمة والنطق">🌍 تعلّم اللغات</button>
-        <button class="suggestion" data-prompt="حل لي مسألة رياضيات واشرح الخطوات بالتفصيل">📚 المساعدة في الدراسة</button>
-      </div>
-    </div>
+// ضع هنا Project URL وPublishable key من Supabase.
+// لا تضع Gemini API key أو أي Secret key هنا.
+const SUPABASE_URL='https://sklksgvgpbqelnkhlygr.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_MIQNMH-_adzOffyRSYbQeQ_1H_84r5f';
+const WORKER_URL='https://zaki-ai.zakiply4647.workers.dev';
 
-    <div id="messages" aria-live="polite"></div>
+const configured=SUPABASE_URL.startsWith('https://')&&!SUPABASE_PUBLISHABLE_KEY.includes('PASTE_');
+const db=configured?createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY):null;
+const $=id=>document.getElementById(id);
+let user=null,lang=localStorage.getItem('zaki-lang')||'ar';
+let theme=localStorage.getItem('zaki-theme')||'dark';
+let currentId=null,chat=[],historyRows=[],image=null,busy=false;
+const tr=(ar,en)=>lang==='ar'?ar:en;
 
-    <div class="composer-wrap">
-      <div class="status" id="status">جاهز للمساعدة</div>
-      <div class="composer">
-        <textarea id="prompt" rows="2" placeholder="اكتب رسالتك إلى ZAKI AI..." aria-label="رسالتك"></textarea>
-        <div class="composer-bottom">
-          <span class="hint">↵ Enter للإرسال · Shift + Enter لسطر جديد</span>
-          <button id="send">إرسال ↑</button>
-        </div>
-      </div>
-      <div class="disclaimer">قد يخطئ الذكاء الاصطناعي؛ تحقق من المعلومات المهمة.</div>
-    </div>
-  </section>
-</main>
-</div>
-
-<script>
-const API_URL = "https://zaki-ai.zakiply4647.workers.dev/ask";
-
-const promptBox = document.getElementById("prompt");
-const messages = document.getElementById("messages");
-const welcome = document.getElementById("welcome");
-const sendButton = document.getElementById("send");
-const statusBox = document.getElementById("status");
-const historyBox = document.getElementById("history");
-
-let chat = [];
-let chats = [];
-let busy = false;
-
+function applyLanguage(){
+ document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+ document.querySelectorAll('[data-ar]').forEach(e=>e.textContent=e.dataset[lang]);
+ $('prompt').placeholder=tr('اكتب رسالتك إلى ZAKI AI...','Message ZAKI AI...');
+ $('language').textContent=lang==='ar'?'🌐 العربية / English':'🌐 English / العربية';
+}
+function applyTheme(){document.documentElement.dataset.theme=theme;localStorage.setItem('zaki-theme',theme)}
+function showAuth(){
+ ['welcome','messages','composerWrap'].forEach(id=>$(id).classList.add('hidden'));
+ $('authView').classList.remove('hidden');
+ $('authStatus').textContent=configured?'':tr('أكمل إعداد Supabase أولًا.','Finish Supabase setup first.');
+}
+function showChat(){
+ $('authView').classList.add('hidden');$('composerWrap').classList.remove('hidden');
+ $('welcome').classList.toggle('hidden',chat.length>0);
+ $('messages').classList.toggle('hidden',chat.length===0);
+}
+function render(){
+ const box=$('messages');box.replaceChildren();
+ chat.forEach(m=>{
+  const el=document.createElement('div');el.className='msg '+(m.role==='user'?'user':'ai');
+  if(m.role!=='user'){const label=document.createElement('div');label.className='label';label.textContent='✦ ZAKI AI';el.append(label)}
+  const text=document.createElement('div');text.textContent=m.content||'';el.append(text);
+  if(m.imageData){const img=document.createElement('img');img.src=m.imageData;el.append(img)}
+  if(m.role!=='user'){
+   const b=document.createElement('button');b.className='small';b.textContent=tr('نسخ الرد','Copy response');
+   b.onclick=()=>navigator.clipboard.writeText(m.content||'');el.append(b);
+  }
+  box.append(el);
+ });
+ showChat();window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+}
 function renderHistory(){
-  historyBox.replaceChildren();
-  chats.forEach((item,index)=>{
-    const b=document.createElement("button");
-    b.className="history-item";
-    b.textContent="▤ "+item.title;
-    b.onclick=()=>{
-      chat=item.messages.map(m=>({...m}));
-      renderMessages();
-    };
-    historyBox.appendChild(b);
-  });
+ const box=$('history');box.replaceChildren();
+ historyRows.forEach(row=>{
+  const wrap=document.createElement('div');wrap.className='hist';
+  const b=document.createElement('button');b.textContent=row.title||tr('محادثة جديدة','New chat');
+  b.onclick=()=>loadChat(row.id);
+  const del=document.createElement('button');del.className='small';del.textContent='×';del.title=tr('حذف','Delete');
+  del.onclick=async()=>{
+   if(!confirm(tr('حذف المحادثة؟','Delete this conversation?')))return;
+   if(db&&user)await db.from('conversations').delete().eq('id',row.id);
+   historyRows=historyRows.filter(x=>x.id!==row.id);
+   if(currentId===row.id)newChat();renderHistory();
+  };
+  wrap.append(b,del);box.append(wrap);
+ });
 }
-
-function saveChat(){
-  if(!chat.length)return;
-  const title=String(chat.find(m=>m.role==="user")?.text||"محادثة جديدة").slice(0,36);
-  const id=chat[0].text;
-  const old=chats.findIndex(c=>c.id===id);
-  const item={id,title,messages:chat.map(m=>({...m}))};
-  if(old>=0)chats[old]=item;
-  else chats.unshift(item);
-  chats=chats.slice(0,15);
-  try{localStorage.setItem("zaki-ai-chats",JSON.stringify(chats));}catch(e){}
-  renderHistory();
+async function refreshHistory(){
+ if(!db||!user)return;
+ const {data,error}=await db.from('conversations').select('id,title,updated_at').order('updated_at',{ascending:false}).limit(50);
+ if(error){console.error(error);return}historyRows=data||[];renderHistory();
 }
-
-function renderMessages(){
-  messages.replaceChildren();
-  welcome.style.display=chat.length?"none":"block";
-  chat.forEach((m,index)=>{
-    const wrap=document.createElement("div");
-    wrap.className="msg "+(m.role==="user"?"user":"ai");
-    if(m.role==="assistant"){
-      const label=document.createElement("div");
-      label.className="msg-label";
-      label.textContent="✦ ZAKI AI";
-      wrap.appendChild(label);
-    }
-    const body=document.createElement("div");
-    body.className="msg-body";
-    body.textContent=m.text;
-    wrap.appendChild(body);
-    if(m.role==="assistant"){
-      const actions=document.createElement("div");
-      actions.className="msg-actions";
-      const copy=document.createElement("button");
-      copy.className="smallbtn";
-      copy.textContent="نسخ الرد";
-      copy.onclick=async()=>{
-        try{
-          await navigator.clipboard.writeText(m.text);
-          copy.textContent="تم النسخ ✓";
-        }catch(e){copy.textContent="تعذر النسخ";}
-      };
-      actions.appendChild(copy);
-      wrap.appendChild(actions);
-    }
-    messages.appendChild(wrap);
-  });
-  window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"});
+async function saveChat(){
+ if(!db||!user||!currentId||!chat.length)return;
+ const title=(chat.find(m=>m.role==='user')?.content||tr('محادثة جديدة','New chat')).slice(0,70);
+ let r=await db.from('conversations').upsert({id:currentId,user_id:user.id,title,updated_at:new Date().toISOString()});
+ if(r.error)throw r.error;
+ r=await db.from('messages').delete().eq('conversation_id',currentId);
+ if(r.error)throw r.error;
+ const rows=chat.map((m,i)=>({conversation_id:currentId,user_id:user.id,role:m.role,content:m.content||'',image_data:m.imageData||null,position:i}));
+ if(rows.length){r=await db.from('messages').insert(rows);if(r.error)throw r.error}
+ await refreshHistory();
 }
-
+async function loadChat(id){
+ if(!db||!user)return;
+ const {data,error}=await db.from('messages').select('role,content,image_data').eq('conversation_id',id).order('position');
+ if(error){alert(error.message);return}
+ currentId=id;chat=(data||[]).map(m=>({role:m.role,content:m.content,imageData:m.image_data}));
+ render();$('app').classList.remove('menu');
+}
 function newChat(){
-  chat=[];
-  renderMessages();
-  promptBox.value="";
-  statusBox.textContent="جاهز للمساعدة";
-  promptBox.focus();
+ currentId=crypto.randomUUID();chat=[];image=null;
+ $('prompt').value='';$('preview').classList.add('hidden');$('imageInput').value='';
+ $('status').textContent=tr('جاهز للمساعدة','Ready to help');render();
 }
-document.getElementById("newChat").onclick=newChat;
-document.getElementById("clearChat").onclick=newChat;
-
-document.querySelectorAll("[data-prompt]").forEach(button=>{
-  button.addEventListener("click",()=>{
-    promptBox.value=button.dataset.prompt;
-    promptBox.focus();
-  });
-});
-
+function showUser(){
+ $('account').textContent=user?(user.email||'Signed in'):'';
+ $('logout').classList.toggle('hidden',!user);
+ $('loginSide').classList.toggle('hidden',!!user);
+ $('loginTop').classList.toggle('hidden',!!user);
+}
 async function sendMessage(){
-  const text=promptBox.value.trim();
-  if(!text||busy)return;
-
-  busy=true;
-  sendButton.disabled=true;
-  statusBox.textContent="ZAKI AI يفكر...";
-  chat.push({role:"user",text});
-  promptBox.value="";
-  renderMessages();
-
-  const thinking={role:"assistant",text:"جارٍ التفكير..."};
-  chat.push(thinking);
-  renderMessages();
-
-  try{
-    const response=await fetch(API_URL,{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({
-        message:text,
-        history:chat.slice(0,-2).slice(-12).map(m=>({
-          role:m.role==="assistant"?"model":"user",
-          parts:[{text:m.text}]
-        }))
-      })
-    });
-
-    const data=await response.json();
-    if(!response.ok){
-      throw new Error(data.error||data.message||("خطأ من الخادم: "+response.status));
-    }
-
-    const answer=data.answer||data.response||
-      data.result?.response||data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-    if(typeof answer!=="string"||!answer.trim()){
-      throw new Error("الخادم لم يرجع إجابة. تحقق من إعدادات Worker.");
-    }
-
-    chat[chat.length-1].text=answer.trim();
-    statusBox.textContent="تم الرد";
-  }catch(error){
-    chat[chat.length-1].text=
-      "تعذر الحصول على الرد.\n\n"+error.message+
-      "\n\nإذا استمرت المشكلة، تحقق من رابط الخادم وإعدادات API وCORS في Cloudflare.";
-    statusBox.textContent="تعذر الاتصال";
-  }finally{
-    busy=false;
-    sendButton.disabled=false;
-    renderMessages();
-    saveChat();
-    promptBox.focus();
-  }
+ const text=$('prompt').value.trim();if((!text&&!image)||busy)return;
+ if(!configured){alert(tr('ضع Publishable key في الكود أولًا.','Add your Supabase Publishable key first.'));return}
+ if(!user){showAuth();$('authStatus').textContent=tr('سجّل الدخول أولًا لإرسال الرسائل وحفظها.','Sign in first to send and save chats.');return}
+ if(!currentId)currentId=crypto.randomUUID();
+ const imageData=image?.data||null;
+ chat.push({role:'user',content:text,imageData});image=null;
+ $('prompt').value='';$('preview').classList.add('hidden');$('imageInput').value='';
+ render();busy=true;$('send').disabled=true;$('status').textContent=tr('ZAKI AI يفكر...','ZAKI AI is thinking...');
+ try{
+  await saveChat();
+  const {data:{session}}=await db.auth.getSession();
+  const response=await fetch(WORKER_URL+'/ask',{
+   method:'POST',
+   headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},
+   body:JSON.stringify({message:text,imageData,history:chat.slice(-13,-1).map(m=>({role:m.role==='assistant'?'model':'user',content:m.content,imageData:m.imageData||undefined}))})
+  });
+  const data=await response.json();
+  if(!response.ok)throw new Error(data.error||data.message||('HTTP '+response.status));
+  const answer=data.answer||data.response||data.candidates?.[0]?.content?.parts?.map(p=>p.text||'').join('');
+  if(!answer)throw new Error('No answer from AI server');
+  chat.push({role:'assistant',content:answer});
+  $('status').textContent=tr('تم الرد','Answered');
+ }catch(e){
+  chat.push({role:'assistant',content:tr('تعذر الحصول على الرد: ','Could not get a response: ')+e.message});
+  $('status').textContent=tr('تعذر الاتصال','Connection error');
+ }finally{
+  busy=false;$('send').disabled=false;render();
+  try{await saveChat()}catch(e){$('status').textContent=tr('تعذر حفظ المحادثة: ','Could not save chat: ')+e.message}
+ }
 }
-
-sendButton.addEventListener("click",sendMessage);
-promptBox.addEventListener("keydown",event=>{
-  if(event.key==="Enter"&&!event.shiftKey){
-    event.preventDefault();
-    sendMessage();
-  }
-});
-
-try{
-  const stored=JSON.parse(localStorage.getItem("zaki-ai-chats")||"[]");
-  if(Array.isArray(stored))chats=stored;
-}catch(e){}
-renderHistory();
+$('send').onclick=sendMessage;
+$('prompt').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage()}});
+$('newChat').onclick=newChat;$('menu').onclick=()=>$('app').classList.toggle('menu');
+$('theme').onclick=$('themeTop').onclick=()=>{theme=theme==='dark'?'light':'dark';applyTheme()};
+$('language').onclick=()=>{lang=lang==='ar'?'en':'ar';localStorage.setItem('zaki-lang',lang);applyLanguage();renderHistory();render()};
+$('loginSide').onclick=$('loginTop').onclick=showAuth;$('back').onclick=showChat;
+$('logout').onclick=async()=>{if(db)await db.auth.signOut();user=null;chat=[];currentId=null;showUser();renderHistory();render();showAuth()};
+document.querySelectorAll('.suggestion').forEach(b=>b.onclick=()=>{$('prompt').value=b.dataset[lang];$('prompt').focus()});
+$('attach').onclick=()=>$('imageInput').click();
+$('imageInput').onchange=async e=>{
+ const file=e.target.files?.[0];if(!file)return;
+ if(file.size>5*1024*1024){alert(tr('الصورة يجب أن تكون أقل من 5 ميغابايت.','Image must be under 5 MB.'));e.target.value='';return}
+ if(!['image/jpeg','image/png','image/webp'].includes(file.type)){alert('Use JPG, PNG or WebP');return}
+ const data=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)});
+ image={data,mime:file.type};
+ $('preview').replaceChildren();const im=document.createElement('img');im.src=data;
+ const name=document.createElement('span');name.textContent=file.name;
+ const remove=document.createElement('button');remove.textContent='×';remove.onclick=()=>{$('preview').classList.add('hidden');image=null;$('imageInput').value=''};
+ $('preview').append(im,name,remove);$('preview').classList.remove('hidden');
+};
+$('signIn').onclick=async()=>{
+ if(!db)return $('authStatus').textContent=tr('أكمل إعداد Supabase أولًا.','Configure Supabase first.');
+ const {error}=await db.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});
+ $('authStatus').textContent=error?.message||tr('تم تسجيل الدخول','Signed in');
+};
+$('signUp').onclick=async()=>{
+ if(!db)return $('authStatus').textContent=tr('أكمل إعداد Supabase أولًا.','Configure Supabase first.');
+ const {error}=await db.auth.signUp({email:$('email').value.trim(),password:$('password').value,options:{emailRedirectTo:location.origin+location.pathname}});
+ $('authStatus').textContent=error?.message||tr('تحقق من بريدك لتأكيد الحساب.','Check your email to confirm your account.');
+};
+$('google').onclick=async()=>{
+ if(!db)return $('authStatus').textContent=tr('أكمل إعداد Supabase أولًا.','Configure Supabase first.');
+ const {error}=await db.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname}});
+ if(error)$('authStatus').textContent=error.message;
+};
+applyTheme();applyLanguage();renderHistory();render();
+if(!configured)$('authStatus').textContent=tr('ضع Publishable key في الكود لتفعيل الحسابات.','Add the Supabase Publishable key to enable accounts.');
+if(db){
+ const {data}=await db.auth.getSession();user=data.session?.user||null;showUser();
+ if(user)await refreshHistory();
+ db.auth.onAuthStateChange(async(_event,session)=>{
+  user=session?.user||null;showUser();
+  if(user){await refreshHistory();showChat()}else{historyRows=[];renderHistory()}
+ });
+}
 </script>
 </body>
-  </html>
-
+</html>
